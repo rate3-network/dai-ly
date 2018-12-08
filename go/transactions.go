@@ -115,12 +115,12 @@ func VerifySigner(sender string, hash string, sig string) bool {
 const (
 	StatusQueued     = "QUEUED"
 	StatusProcessing = "PROCESSING"
-	StatusSuccess    = "SUCESS"
+	StatusSuccess    = "SUCCESS"
 	StatusFailed     = "FAILED"
 )
 
 type Transaction struct {
-	TXHash        string `json:"-"`
+	TXHash        string `json:"txHash"`
 	Signature     string `json:"signature"`
 	Sender        string `json:"sender"`
 	Receiver      string `json:"receiver"`

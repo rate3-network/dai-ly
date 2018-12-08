@@ -46,6 +46,14 @@ func (s Store) GetAllTransactions(ctx context.Context) (txs daily.Transactions, 
 	return
 }
 
+func (s Store) GetAllProcessingTransactions(ctx context.Context) (txs daily.Transactions, err error) {
+	sess := s.NewSession(nil)
+	txs = make(daily.Transactions, 0)
+
+	_, err = sess.Select("*").From(TransactionsT).Where(dbr.Eq(StatusC, daily.StatusProcessing)).Load(&txs)
+	return
+}
+
 func (s Store) GetQueuedTransaction(ctx context.Context) (tx daily.Transaction, err error) {
 	sess := s.NewSession(nil)
 
@@ -61,6 +69,16 @@ func (s Store) UpdateTransactionStatus(ctx context.Context, TXHash string, submi
 	_, err = sess.Update(TransactionsT).SetMap(map[string]interface{}{
 		StatusC:        status,
 		SubmittedHashC: submittedHash}).Where(dbr.Eq(TXHashC, TXHash)).Exec()
+
+	return
+}
+
+func (s Store) UpdateTransactionStatusBySubmitted(ctx context.Context, submittedHash string, status string) (err error) {
+	sess := s.NewSession(nil)
+
+	_, err = sess.Update(TransactionsT).SetMap(map[string]interface{}{
+		StatusC:        status,
+		SubmittedHashC: submittedHash}).Where(dbr.Eq(SubmittedHashC, submittedHash)).Exec()
 
 	return
 }

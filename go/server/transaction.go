@@ -1,17 +1,37 @@
 package server
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 	"os"
 
+	"github.com/go-chi/chi"
 	"github.com/gocraft/dbr"
 	daily "github.com/rate-engineering/dai-ly/go"
 	"github.com/rate-engineering/dai-ly/go/database"
 )
 
 const EnvDelegate = "DELEGATE"
+
+func (a API) GetHashHandler(w http.ResponseWriter, r *http.Request) {
+	var res APIResponse
+
+	var txReq daily.TransactionRequest
+	decodeJSONRequest(&txReq, r)
+
+	hash, err := daily.GenerateHash(txReq)
+	if err == database.ErrAlreadyExist {
+		res.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	res.SetData(hash)
+	j, _ := json.MarshalIndent(res, "", "  ")
+
+	w.Write(j)
+
+	return
+}
 
 func (a API) CreateTransactionHandler(w http.ResponseWriter, r *http.Request) {
 	var res APIResponse
@@ -45,7 +65,7 @@ func (a API) CreateTransactionHandler(w http.ResponseWriter, r *http.Request) {
 			res.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		a.Logger.Error(err)
+		a.Logger.With("tx", tx).Error(err)
 		res.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
@@ -60,9 +80,10 @@ func (a API) CreateTransactionHandler(w http.ResponseWriter, r *http.Request) {
 
 func (a API) PollTransactionHandler(w http.ResponseWriter, r *http.Request) {
 	var res APIResponse
+	TXHash := chi.URLParam(r, "hash")
 
 	ctx := r.Context()
-	var TXHash string
+
 	data, err := a.Store.GetTransaction(ctx, TXHash)
 	if err != nil && err != dbr.ErrNotFound {
 		a.Logger.Error(err)
@@ -122,34 +143,4 @@ func (a API) GetOneQueuedTransactionHandler(w http.ResponseWriter, r *http.Reque
 	w.Write(j)
 
 	return
-}
-
-func (a API) FindAndSubmitQueuedTransaction() {
-	ctx := context.Background()
-
-	tx, err := a.Store.GetQueuedTransaction(ctx)
-	if err != nil && err != dbr.ErrNotFound {
-		a.Logger.Error(err)
-		return
-	}
-
-	if err == dbr.ErrNotFound {
-		a.Logger.Info("No queued transaction found")
-		return
-	}
-
-	a.Logger.With("queued", tx).Info("er")
-
-	submittedHash, err := a.EthereumClient.ExecuteTransaction(tx)
-	if err != nil && err != dbr.ErrNotFound {
-		a.Logger.Error(err)
-		return
-	}
-
-	err = a.Store.UpdateTransactionStatus(ctx, tx.TXHash, submittedHash.Hash().Hex(), daily.StatusProcessing)
-	if err != nil && err != dbr.ErrNotFound {
-		a.Logger.Error(err)
-		return
-	}
-
 }

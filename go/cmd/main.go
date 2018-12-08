@@ -121,6 +121,10 @@ func main() {
 
 	job, _ := scheduler.Every(10).Seconds().Run(s.API.FindAndSubmitQueuedTransaction)
 	job.SkipWait <- true
+	job, _ = scheduler.Every(5).Seconds().Run(s.API.IterateProcessingTransactions)
+	job.SkipWait <- true
+
+	go s.API.ListenEvents()
 
 	logger.Fatal(s.Start())
 }

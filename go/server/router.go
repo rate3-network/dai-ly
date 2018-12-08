@@ -61,8 +61,9 @@ func (s *Server) SetRouter() error {
 	api := chi.NewRouter()
 	api.Use(JSONHeader)
 	api.Get("/test", s.API.GetTestHandler)
+	api.Post("/hash", s.API.GetHashHandler)
 	api.Post("/transaction", s.API.CreateTransactionHandler)
-	api.Get("/transaction", s.API.PollTransactionHandler)
+	api.Get("/transactions/{hash}", s.API.PollTransactionHandler)
 	api.Get("/transactions", s.API.GetTransactionsHandler)
 	api.Get("/queued", s.API.GetOneQueuedTransactionHandler)
 

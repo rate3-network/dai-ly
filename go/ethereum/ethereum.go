@@ -8,7 +8,6 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	daily "github.com/rate-engineering/dai-ly/go"
@@ -18,6 +17,7 @@ import (
 type Client struct {
 	*ethclient.Client
 	*contract.DelegatableDai
+	TokenAddress common.Address
 }
 
 func NewClient(contractAddres string, url string) (*Client, error) {
@@ -32,6 +32,7 @@ func NewClient(contractAddres string, url string) (*Client, error) {
 	client.Client = c
 
 	address := common.HexToAddress(contractAddres)
+	client.TokenAddress = address
 	d, err := contract.NewDelegatableDai(address, client)
 	if err != nil {
 		return &client, err
@@ -42,33 +43,36 @@ func NewClient(contractAddres string, url string) (*Client, error) {
 	return &client, err
 }
 
-func (c *Client) ExecuteTransaction(tx daily.Transaction) (*types.Transaction, error) {
-	fromAddress := common.HexToAddress("0x570932869143c8a6e07b4aa10e0b30814cf45ff0") //delegate
+func (c *Client) ExecuteTransaction(tx daily.Transaction) (string, error) {
+	fromAddress := common.HexToAddress(os.Getenv("DELEGATE")) //delegate
 	pendingNonce, err := c.PendingNonceAt(context.Background(), fromAddress)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	gasPrice, err := c.SuggestGasPrice(context.Background())
-	if err != nil {
-		return nil, err
-	}
+	// gasPrice, err := c.SuggestGasPrice(context.Background())
+	// if err != nil {
+	// 	return "", err
+	// }
 
 	privKey, err := crypto.HexToECDSA(os.Getenv("PRIVATE_KEY")[2:])
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	auth := bind.NewKeyedTransactor(privKey)
 	auth.Nonce = big.NewInt(int64(pendingNonce))
 	auth.Value = big.NewInt(0)     // in wei
-	auth.GasLimit = uint64(300000) // in units
+	auth.GasLimit = uint64(150000) // in units
+	// auth.GasPrice = gasPrice
+	gasPrice := new(big.Int)
+	gasPrice.SetString("10"+"000000000", 10)
 	auth.GasPrice = gasPrice
 
 	receiver := common.HexToAddress(tx.Receiver)
 	sigB, err := hexutil.Decode(tx.Signature)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	amount := new(big.Int)
@@ -83,8 +87,8 @@ func (c *Client) ExecuteTransaction(tx daily.Transaction) (*types.Transaction, e
 	submitted, err := c.TransferPreSigned(auth, sigB, receiver,
 		amount, fee, nonce)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return submitted, nil
+	return submitted.Hash().Hex(), nil
 }
