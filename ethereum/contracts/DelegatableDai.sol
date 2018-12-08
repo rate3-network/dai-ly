@@ -48,9 +48,9 @@ contract DelegatableDai is ERC865, EIP20 {
         balances[msg.sender] = balances[msg.sender].add(_fee);
         signatures[_signature] = true;
 
-        Transfer(from, _to, _value);
-        Transfer(from, msg.sender, _fee);
-        TransferPreSigned(from, _to, msg.sender, _value, _fee);
+        emit Transfer(from, _to, _value);
+        emit Transfer(from, msg.sender, _fee);
+        emit TransferPreSigned(from, _to, msg.sender, _value, _fee);
         return true;
     }
 
@@ -84,9 +84,9 @@ contract DelegatableDai is ERC865, EIP20 {
         balances[msg.sender] = balances[msg.sender].add(_fee);
         signatures[_signature] = true;
 
-        Approval(from, _spender, _value);
-        Transfer(from, msg.sender, _fee);
-        ApprovalPreSigned(from, _spender, msg.sender, _value, _fee);
+        emit Approval(from, _spender, _value);
+        emit Transfer(from, msg.sender, _fee);
+        emit ApprovalPreSigned(from, _spender, msg.sender, _value, _fee);
         return true;
     }
 
@@ -120,9 +120,9 @@ contract DelegatableDai is ERC865, EIP20 {
         balances[msg.sender] = balances[msg.sender].add(_fee);
         signatures[_signature] = true;
 
-        Approval(from, _spender, allowed[from][_spender]);
-        Transfer(from, msg.sender, _fee);
-        ApprovalPreSigned(from, _spender, msg.sender, allowed[from][_spender], _fee);
+        emit Approval(from, _spender, allowed[from][_spender]);
+        emit Transfer(from, msg.sender, _fee);
+        emit ApprovalPreSigned(from, _spender, msg.sender, allowed[from][_spender], _fee);
         return true;
     }
 
@@ -161,9 +161,9 @@ contract DelegatableDai is ERC865, EIP20 {
         balances[msg.sender] = balances[msg.sender].add(_fee);
         signatures[_signature] = true;
 
-        Approval(from, _spender, allowed[from][_spender]);
-        Transfer(from, msg.sender, _fee);
-        ApprovalPreSigned(from, _spender, msg.sender, allowed[from][_spender], _fee);
+        emit Approval(from, _spender, allowed[from][_spender]);
+        emit Transfer(from, msg.sender, _fee);
+        emit ApprovalPreSigned(from, _spender, msg.sender, allowed[from][_spender], _fee);
         return true;
     }
 
@@ -203,8 +203,8 @@ contract DelegatableDai is ERC865, EIP20 {
         balances[msg.sender] = balances[msg.sender].add(_fee);
         signatures[_signature] = true;
 
-        Transfer(_from, _to, _value);
-        Transfer(spender, msg.sender, _fee);
+        emit Transfer(_from, _to, _value);
+        emit Transfer(spender, msg.sender, _fee);
         return true;
     }
 
@@ -229,7 +229,7 @@ contract DelegatableDai is ERC865, EIP20 {
         returns (bytes32)
     {
         /* "15420b71": transferPreSignedHashing(address,address,uint256,uint256,uint256) */
-        return keccak256(bytes4(0x48664c16), _token, _to, _value, _fee, _nonce);
+        return keccak256(abi.encodeWithSelector(bytes4(0x48664c16), _token, _to, _value, _fee, _nonce));
     }
 
     /**
@@ -252,7 +252,7 @@ contract DelegatableDai is ERC865, EIP20 {
         returns (bytes32)
     {
         /* "f7ac9c2e": approvePreSignedHashing(address,address,uint256,uint256,uint256) */
-        return keccak256(bytes4(0xf7ac9c2e), _token, _spender, _value, _fee, _nonce);
+        return keccak256(abi.encodeWithSelector(bytes4(0xf7ac9c2e), _token, _spender, _value, _fee, _nonce));
     }
 
     /**
@@ -275,7 +275,7 @@ contract DelegatableDai is ERC865, EIP20 {
         returns (bytes32)
     {
         /* "a45f71ff": increaseApprovalPreSignedHashing(address,address,uint256,uint256,uint256) */
-        return keccak256(bytes4(0xa45f71ff), _token, _spender, _addedValue, _fee, _nonce);
+        return keccak256(abi.encodeWithSelector(bytes4(0xa45f71ff), _token, _spender, _addedValue, _fee, _nonce));
     }
 
      /**
@@ -298,7 +298,7 @@ contract DelegatableDai is ERC865, EIP20 {
         returns (bytes32)
     {
         /* "59388d78": decreaseApprovalPreSignedHashing(address,address,uint256,uint256,uint256) */
-        return keccak256(bytes4(0x59388d78), _token, _spender, _subtractedValue, _fee, _nonce);
+        return keccak256(abi.encodeWithSelector(bytes4(0x59388d78), _token, _spender, _subtractedValue, _fee, _nonce));
     }
 
     /**
@@ -323,7 +323,7 @@ contract DelegatableDai is ERC865, EIP20 {
         returns (bytes32)
     {
         /* "b7656dc5": transferFromPreSignedHashing(address,address,address,uint256,uint256,uint256) */
-        return keccak256(bytes4(0xb7656dc5), _token, _from, _to, _value, _fee, _nonce);
+        return keccak256(abi.encodeWithSelector(bytes4(0xb7656dc5), _token, _from, _to, _value, _fee, _nonce));
     }
 
     /**
