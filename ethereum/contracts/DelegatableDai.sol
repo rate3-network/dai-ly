@@ -17,6 +17,9 @@ contract DelegatableDai is ERC865, EIP20 {
     event TransferPreSigned(address indexed from, address indexed to, address indexed delegate, uint256 amount, uint256 fee);
     event ApprovalPreSigned(address indexed from, address indexed to, address indexed delegate, uint256 amount, uint256 fee);
 
+    constructor() public EIP20(1000000 * (10 ** 18), "DAI", 18, "DAI") {
+    }
+
     /**
      * @notice Submit a presigned transfer
      * @param _signature bytes The signature, issued by the owner.
