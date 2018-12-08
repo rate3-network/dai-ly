@@ -5,6 +5,8 @@ import { HashRouter, Switch, Route } from 'react-router-dom';
 
 import './App.css';
 import Main from './pages/Main';
+import QrScan from './pages/QrScan';
+import SendDai from './pages/SendDai';
 import RootStore from './stores/RootStore';
 import AppDrawer from './components/SwipableDrawer';
 import AppNavBar from './components/AppNavBar';
@@ -35,7 +37,7 @@ class App extends Component {
     return (
       <Provider {...stores}>
         <MuiThemeProvider theme={theme}>
-          <div>
+          <div className="desktop2mobile">
             <AppNavBar />
             <AppDrawer />
             <div className="app">
@@ -45,6 +47,16 @@ class App extends Component {
                     exact
                     path="/"
                     component={Main}
+                  />
+                  <Route
+                    exact
+                    path="/scan"
+                    component={QrScan}
+                  />
+                  <Route
+                    // exact
+                    path="/send/:address"
+                    component={SendDai}
                   />
                 </Switch>
               </HashRouter>

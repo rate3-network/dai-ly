@@ -1,5 +1,10 @@
 .app {
   background-color: #FAFAFA;
-  margin-top: 15%;
+  /* margin-top: 5%; */
+
+  width: 100vw;
   /* font-size: 100px; */
+}
+.desktop2mobile {
+
 }

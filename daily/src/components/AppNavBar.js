@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
@@ -38,9 +37,9 @@ const styles = theme => ({
   // },
   menuButton: {
     marginRight: 20,
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
-    },
+    // [theme.breakpoints.up('sm')]: {
+    //   display: 'none',
+    // },
   },
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
@@ -83,8 +82,7 @@ class AppNavBar extends React.Component {
 
     return (
       <div className={classes.root}>
-        <CssBaseline />
-        <AppBar color="primary" position="fixed" className={classes.appBar}>
+        <AppBar color="primary" position="static" className={classes.appBar}>
           <Toolbar>
             <IconButton
               color="inherit"
