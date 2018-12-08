@@ -1,26 +1,58 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Provider } from 'mobx-react';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import { HashRouter, Switch, Route } from 'react-router-dom';
 
+import './App.css';
+import Main from './pages/Main';
+import RootStore from './stores/RootStore';
+import AppDrawer from './components/SwipableDrawer';
+import AppNavBar from './components/AppNavBar';
+
+const stores = {
+  RootStore,
+};
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  },
+  palette: {
+    primary: {
+      main: '#F2B350',
+      contrastText: '#fff',
+    },
+    textPrimary: {
+      main: 'white',
+    },
+    // secondary: '#5EB1BF',
+  },
+});
 class App extends Component {
+  componentWillMount() {
+
+  }
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edasdfsait <code>src/App.js</code> and save to reloaasdfasdfd.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Provider {...stores}>
+        <MuiThemeProvider theme={theme}>
+          <div>
+            <AppNavBar />
+            <AppDrawer />
+            <div className="app">
+              <HashRouter basename="/">
+                <Switch>
+                  <Route
+                    exact
+                    path="/"
+                    component={Main}
+                  />
+                </Switch>
+              </HashRouter>
+            </div>
+            {/* <Main /> */}
+          </div>
+        </MuiThemeProvider>
+      </Provider>
     );
   }
 }
