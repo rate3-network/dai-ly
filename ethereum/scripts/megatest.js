@@ -8,11 +8,12 @@ const asyncFunction = async function asyncFunction() {
   const fromAddr = '0x2b522cabe9950d1153c26c1b399b293caa99fcf9';
   const toAddr = '0x3644b986b3f5ba3cb8d5627a22465942f8e06d09';
   const delegate = '0x47a793d7d0aa5727095c3fe132a6c1a46804c8d2';
-  const token = '0x87313e56553eb21b4c46908defe47ad018bbfa64';
+  const token = '0x0e465c504e590175f55f05d52c7c3affb9f5f2b0';
 
   await DelegatableDai.at(token).then(function(inst) {
     dai = inst;
   });
+
   const amountToRecipient = 100;
   const amountToDelegate = 1;
   const nonce = web3.eth.getTransactionCount(fromAddr);
@@ -22,10 +23,28 @@ const asyncFunction = async function asyncFunction() {
   // s = signature[64:128]
   // v = signature[128:130]
   // https://github.com/ethereum/wiki/wiki/JavaScript-API#web3ethsign
-  const signature = web3.eth.sign(fromAddr, web3js.utils.soliditySha3(nonce, fromAddr, toAddr, delegate, amountToRecipient, amountToDelegate, token));
+  const hash = await dai.transferPreSignedHashing(token, toAddr, amountToRecipient, amountToDelegate, nonce, { from: fromAddr });
+  const signature = web3.eth.sign(fromAddr, hash);
   console.log('signature', signature);
 
-  dai.transferPreSigned(signature, toAddr, amountToRecipient, amountToDelegate, nonce, { from: delegate });
+  // const fromAddrBeforeDaiBalance = await dai.balanceOf(fromAddr);
+  // const toAddrBeforeDaiBalance = await dai.balanceOf(toAddr);
+  // const delegateBeforeDaiBalance = await dai.balanceOf(delegate);
+  // const fromAddrBeforeEthBalance = await web3.eth.getBalance(fromAddr);
+  // const toAddrBeforeEthBalance = await web3.eth.getBalance(toAddr);
+  // const delegateBeforeEthBalance = await web3.eth.getBalance(delegate);
+  // console.log('fromAddr before Dai balance', fromAddrBeforeDaiBalance);
+  // console.log('toAddr before Dai balance', toAddrBeforeDaiBalance);
+  // console.log('delegate before Dai balance', delegateBeforeDaiBalance);
+
+  const test = await dai.transferPreSigned(signature, toAddr, amountToRecipient, amountToDelegate, nonce, { from: delegate });
+  console.log(test);
+  // const fromAddrAfterDaiBalance = await dai.balanceOf(fromAddr);
+  // const toAddrAfterDaiBalance = await dai.balanceOf(toAddr);
+  // const delegateAfterDaiBalance = await dai.balanceOf(delegate);
+  // console.log('fromAddr after Dai balance', fromAddrAfterDaiBalance);
+  // console.log('toAddr after Dai balance', toAddrAfterDaiBalance);
+  // console.log('delegate after Dai balance', delegateAfterDaiBalance);
 };
 
 module.exports = function(callback) {
