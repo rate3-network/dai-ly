@@ -20,7 +20,8 @@ func (a API) GetHashHandler(w http.ResponseWriter, r *http.Request) {
 	decodeJSONRequest(&txReq, r)
 
 	hash, err := daily.GenerateHash(txReq)
-	if err == database.ErrAlreadyExist {
+	if err != nil {
+		a.Logger.With("txReq", txReq).Error(err)
 		res.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -42,7 +43,8 @@ func (a API) CreateTransactionHandler(w http.ResponseWriter, r *http.Request) {
 	decodeJSONRequest(&txReq, r)
 
 	hash, err := daily.GenerateHash(txReq)
-	if err == database.ErrAlreadyExist {
+	if err != nil {
+		a.Logger.With("txReq", txReq).Error(err)
 		res.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
