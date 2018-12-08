@@ -15,8 +15,9 @@ const asyncFunction = async function asyncFunction() {
   });
 
   const amountToRecipient = 100;
-  const amountToDelegate = 2;
-  const nonce = web3.eth.getTransactionCount(fromAddr);
+  const amountToDelegate = 3;
+  const nonce = 1;
+  console.log(nonce);
 
   // signature will consists of V, R, S
   // r = signature[0:64]
