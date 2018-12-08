@@ -232,7 +232,7 @@ contract DelegatableDai is ERC865, EIP20 {
         returns (bytes32)
     {
         /* "15420b71": transferPreSignedHashing(address,address,uint256,uint256,uint256) */
-        return keccak256(abi.encodeWithSelector(bytes4(0x48664c16), _token, _to, _value, _fee, _nonce));
+        return keccak256(abi.encodeWithSelector(bytes4(0x15420b71), _token, _to, _value, _fee, _nonce));
     }
 
     /**
