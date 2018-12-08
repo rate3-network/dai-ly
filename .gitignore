@@ -2,3 +2,4 @@ go/vendor
 .env
 node_modules
 build
+secrets.js
