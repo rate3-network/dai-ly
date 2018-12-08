@@ -8,6 +8,8 @@ import (
 	"path"
 	"time"
 
+	"github.com/carlescere/scheduler"
+	"github.com/rate-engineering/dai-ly/go/ethereum"
 	"github.com/rate-engineering/dai-ly/go/zap"
 
 	_ "github.com/gemnasium/migrate/driver/postgres"
@@ -20,11 +22,13 @@ import (
 
 // ENVIRONMENTS
 const (
-	EnvPGHost     = "PGHOST"
-	EnvPGUser     = "PGUSER"
-	EnvPGPassword = "PGPASSWORD"
-	EnvPGDatabase = "PGDATABASE"
-	EnvPGPort     = "PGPORT"
+	EnvPGHost        = "PGHOST"
+	EnvPGUser        = "PGUSER"
+	EnvPGPassword    = "PGPASSWORD"
+	EnvPGDatabase    = "PGDATABASE"
+	EnvPGPort        = "PGPORT"
+	EnvTokenContract = "TOKEN_CONTRACT"
+	EnvRPCClient     = "RPC_CLIENT"
 )
 
 // SessionStore encodes and decodes session data stored in signed cookies
@@ -56,7 +60,7 @@ func main() {
 		pgPort = "5432"
 	}
 
-	pgURL := "postgres://" + url.QueryEscape(os.Getenv(EnvPGUser)) + ":" + url.QueryEscape(os.Getenv(EnvPGPassword)) + "@" + os.Getenv(EnvPGHost) + ":" + os.Getenv(EnvPGPort) + "/" + os.Getenv(EnvPGDatabase)
+	pgURL := "postgres://" + url.QueryEscape(os.Getenv(EnvPGUser)) + ":" + url.QueryEscape(os.Getenv(EnvPGPassword)) + "@" + os.Getenv(EnvPGHost) + ":" + os.Getenv(EnvPGPort) + "/" + os.Getenv(EnvPGDatabase) + "?sslmode=disable"
 
 	db, err := dbr.Open("postgres", pgURL, nil)
 	if err != nil {
@@ -75,22 +79,37 @@ func main() {
 	if err != nil {
 		logger.Fatal()
 	}
-	migrationsPath := path.Join(wd, "./postgres/db/migrations")
+	migrationsPath := path.Join(wd, "./database/scripts/migrations")
 	allErrors, ok := migrate.UpSync(pgURL, migrationsPath)
 	if !ok {
 		logger.Info(allErrors)
+		logger.Info(pgURL)
 
 	}
 
+	// set up ethereum client
+	client, err := ethereum.NewClient(os.Getenv(EnvTokenContract), os.Getenv(EnvRPCClient))
+	if err != nil {
+		logger.Fatal()
+	}
+
 	s.API = &server.API{
-		Store:  &database.Store{Connection: db, Logger: logger},
-		Logger: logger,
+		Store:          &database.Store{Connection: db, Logger: logger},
+		Logger:         logger,
+		EthereumClient: client,
 	}
 
 	err = s.SetRouter()
 	if err != nil {
 		logger.Fatal(err)
 	}
+
+	job, _ := scheduler.Every(10).Seconds().Run(s.API.FindAndSubmitQueuedTransaction)
+	job.SkipWait <- true
+	job, _ = scheduler.Every(5).Seconds().Run(s.API.IterateProcessingTransactions)
+	job.SkipWait <- true
+
+	// go s.API.ListenEvents()
 
 	logger.Fatal(s.Start())
 }
