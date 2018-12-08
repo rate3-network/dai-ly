@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import Lottie from 'react-lottie';
 
 import biking from '../assets/biking_is_cool.json';
@@ -8,28 +8,13 @@ const defaultOptions = {
   animationData: biking,
   loop: true,
 };
-
-class LoadingAnim extends Component {
-  state = {
-    // startFrame: 0,
-    // endFrame: 120,
-    speed: 1,
-  }
-  componentDidMount() {
-    this.setFrames();
-  }
-
-  setFrames() {
-    this.setState({ endFrame: this.state.endFrame, speed: this.state.speed });
-  }
-
+/* eslint react/prefer-stateless-function: "off" */
+class LoadingAnim extends PureComponent {
   render() {
     return (
       <Lottie
         options={defaultOptions}
         height={200}
-        speed={this.state.speed}
-        segments={[this.state.startFrame, this.state.endFrame]}
         isClickToPauseDisabled
       />
     );

@@ -19,8 +19,8 @@ class NetworkStore {
    * 2** success
    * 4** or 5** fail
    */
-  @observable status = -1;
-  @observable receiver = '';
+  @observable status = 200;
+  @observable receiver = 'asdfasd';
   @observable speed = 0;
   @action
   init() {
