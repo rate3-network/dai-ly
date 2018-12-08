@@ -17,6 +17,9 @@ contract DelegatableDai is ERC865, EIP20 {
     event TransferPreSigned(address indexed from, address indexed to, address indexed delegate, uint256 amount, uint256 fee);
     event ApprovalPreSigned(address indexed from, address indexed to, address indexed delegate, uint256 amount, uint256 fee);
 
+    constructor() public EIP20(1000000 * (10 ** 18), "DAI", 18, "DAI") {
+    }
+
     /**
      * @notice Submit a presigned transfer
      * @param _signature bytes The signature, issued by the owner.
@@ -229,7 +232,7 @@ contract DelegatableDai is ERC865, EIP20 {
         returns (bytes32)
     {
         /* "15420b71": transferPreSignedHashing(address,address,uint256,uint256,uint256) */
-        return keccak256(abi.encodeWithSelector(bytes4(0x48664c16), _token, _to, _value, _fee, _nonce));
+        return keccak256(abi.encodeWithSelector(bytes4(0x15420b71), _token, _to, _value, _fee, _nonce));
     }
 
     /**
@@ -357,7 +360,9 @@ contract DelegatableDai is ERC865, EIP20 {
         if (v != 27 && v != 28) {
             return (address(0));
         } else {
-            return ecrecover(hash, v, r, s);
+            bytes memory prefix = "\x19Ethereum Signed Message:\n32";
+            bytes32 prefixedHash = keccak256(prefix, hash);
+            return ecrecover(prefixedHash, v, r, s);
         }
     }
 
