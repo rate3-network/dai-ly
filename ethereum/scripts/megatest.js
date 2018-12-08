@@ -1,5 +1,4 @@
 const DelegatableDai = artifacts.require("./DelegatableDai.sol");
-const web3js = require('web3'); // web3 v1
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
