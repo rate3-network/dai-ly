@@ -17,6 +17,15 @@ type Store struct {
 const (
 	TransactionsT = "transactions"
 
+	TXHashC     = "tx_hash"
+	SenderC     = "sender"
+	ReceiverC   = "receiver"
+	DelegateC   = "delegate"
+	FeeAmountC  = "fee_amount"
+	SendAmountC = "send_amount"
+	TokenC      = "fee_amount"
+	NonceC      = "nonce"
+
 	LastCreatedC  = "last_created"
 	LastModifiedC = "last_modified"
 )

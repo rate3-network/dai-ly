@@ -10,6 +10,13 @@ type TransactionRequest struct {
 	Nonce      string `json:"nonce" valid:"int,required"`
 }
 
+const (
+	StatusQueued     = "QUEUED"
+	StatusProcessing = "PROCESSING"
+	StatusSuccess    = "SUCESS"
+	StatusFailed     = "FAILED"
+)
+
 type Transaction struct {
 	Sender     string
 	Receiver   string
@@ -18,6 +25,7 @@ type Transaction struct {
 	SendAmount string
 	Token      string
 	Nonce      string
+	Status     string
 }
 
 type Transactions []Transaction

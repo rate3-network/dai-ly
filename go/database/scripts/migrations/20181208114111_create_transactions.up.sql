@@ -8,6 +8,7 @@ CREATE TABLE transactions (
   send_amount       text                          NOT NULL,
   token             text                          NOT NULL,
   nonce             integer                       NOT NULL,
+  status            text                          NOT NULL DEFAULT "QUEUED",
   last_created      timestamp with time zone      NOT NULL DEFAULT current_timestamp,
   last_modified     timestamp with time zone      NOT NULL DEFAULT current_timestamp
 );
