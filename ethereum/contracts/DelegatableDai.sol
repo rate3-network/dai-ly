@@ -228,7 +228,7 @@ contract DelegatableDai is ERC865, EIP20 {
         pure
         returns (bytes32)
     {
-        /* "48664c16": transferPreSignedHashing(address,address,address,uint256,uint256,uint256) */
+        /* "15420b71": transferPreSignedHashing(address,address,uint256,uint256,uint256) */
         return keccak256(bytes4(0x48664c16), _token, _to, _value, _fee, _nonce);
     }
 
