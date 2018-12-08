@@ -23,12 +23,14 @@ const theme = createMuiTheme({
       main: '#F2B350',
       contrastText: '#fff',
     },
-    textPrimary: {
-      main: 'white',
+    secondary: {
+      main: '#5EB1BF',
+      contrastText: '#fff',
     },
     // secondary: '#5EB1BF',
   },
 });
+
 class App extends Component {
   componentWillMount() {
 
@@ -54,8 +56,13 @@ class App extends Component {
                     component={QrScan}
                   />
                   <Route
-                    // exact
+                    exact
                     path="/send/:address"
+                    component={SendDai}
+                  />
+                  <Route
+                    exact
+                    path="/send/"
                     component={SendDai}
                   />
                 </Switch>

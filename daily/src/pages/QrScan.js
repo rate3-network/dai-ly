@@ -38,7 +38,7 @@ class QrScan extends Component {
     }
   }
   handleError(err) {
-    console.error(err);
+    console.log(err);
   }
   render() {
     const { classes } = this.props;

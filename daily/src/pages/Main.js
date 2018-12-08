@@ -58,9 +58,11 @@ const Main = inject('RootStore')(observer((props) => {
         ${'250.00'} DAI Pending
       </span>
       <div className={classes.btnGroup}>
-        <Button className={classes.btn} size="small" variant="contained" color="primary">
-          Send
-        </Button>
+        <Link className={classes.noDeco} to="/send">
+          <Button className={classes.btn} size="small" variant="contained" color="primary">
+            Send
+          </Button>
+        </Link>
         <span className={classes.spacer} />
         <Link className={classes.noDeco} to="/scan">
           <Button className={classes.btn} size="small" variant="contained" color="primary">
