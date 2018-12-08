@@ -56,7 +56,7 @@ func main() {
 		pgPort = "5432"
 	}
 
-	pgURL := "postgres://" + url.QueryEscape(os.Getenv(EnvPGUser)) + ":" + url.QueryEscape(os.Getenv(EnvPGPassword)) + "@" + os.Getenv(EnvPGHost) + ":" + os.Getenv(EnvPGPort) + "/" + os.Getenv(EnvPGDatabase)
+	pgURL := "postgres://" + url.QueryEscape(os.Getenv(EnvPGUser)) + ":" + url.QueryEscape(os.Getenv(EnvPGPassword)) + "@" + os.Getenv(EnvPGHost) + ":" + os.Getenv(EnvPGPort) + "/" + os.Getenv(EnvPGDatabase) + "?sslmode=disable"
 
 	db, err := dbr.Open("postgres", pgURL, nil)
 	if err != nil {
@@ -75,10 +75,11 @@ func main() {
 	if err != nil {
 		logger.Fatal()
 	}
-	migrationsPath := path.Join(wd, "./postgres/db/migrations")
+	migrationsPath := path.Join(wd, "./database/scripts/migrations")
 	allErrors, ok := migrate.UpSync(pgURL, migrationsPath)
 	if !ok {
 		logger.Info(allErrors)
+		logger.Info(pgURL)
 
 	}
 

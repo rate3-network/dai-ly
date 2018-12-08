@@ -107,6 +107,7 @@ func (s *Server) SetRouter() error {
 	api := chi.NewRouter()
 	api.Use(JSONHeader)
 	api.Get("/test", s.API.GetTestHandler)
+	api.Get("/transactions", s.API.GetTransactionsHandler)
 
 	// API Router Initiation
 	main.Mount("/api", api)
