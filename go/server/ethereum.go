@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"time"
 
 	ethereum "github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
@@ -96,6 +97,19 @@ func (a API) IterateProcessingTransactions() {
 		submittedTx, isPending, err := a.EthereumClient.TransactionByHash(context.Background(), txHash)
 		if err != nil {
 			a.Logger.With("submittedHash", txHash).Error(err)
+			if err.Error() == "not found" {
+				now := time.Now()
+				now.Add(time.Minute * -2)
+				if now.After(tx.LastModified) {
+					a.Logger.Info("Re-queuing transaction that was missing for 2 minutes: " + tx.SubmittedHash)
+					// retry if processing transaction not found after 2 minutes
+					err = a.Store.UpdateTransactionStatusBySubmitted(ctx, tx.SubmittedHash, daily.StatusQueued)
+					if err != nil {
+						a.Logger.Error(err)
+					}
+
+				}
+			}
 			continue
 		}
 

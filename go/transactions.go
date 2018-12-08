@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"log"
 	"math/big"
+	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -120,17 +121,19 @@ const (
 )
 
 type Transaction struct {
-	TXHash        string `json:"txHash"`
-	Signature     string `json:"signature"`
-	Sender        string `json:"sender"`
-	Receiver      string `json:"receiver"`
-	Delegate      string `json:"delegate"`
-	FeeAmount     string `json:"feeAmount"`
-	SendAmount    string `json:"sendAmount"`
-	Token         string `json:"token"`
-	Nonce         string `json:"nonce"`
-	SubmittedHash string `json:"submittedHash"`
-	Status        string `json:"status"`
+	TXHash        string    `json:"txHash"`
+	Signature     string    `json:"signature"`
+	Sender        string    `json:"sender"`
+	Receiver      string    `json:"receiver"`
+	Delegate      string    `json:"delegate"`
+	FeeAmount     string    `json:"feeAmount"`
+	SendAmount    string    `json:"sendAmount"`
+	Token         string    `json:"token"`
+	Nonce         string    `json:"nonce"`
+	SubmittedHash string    `json:"submittedHash"`
+	Status        string    `json:"status"`
+	LastModified  time.Time `json:"lastUpdated"`
+	LastCreated   time.Time `json:"lastCreated"`
 }
 
 type Transactions []Transaction
