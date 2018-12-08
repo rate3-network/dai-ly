@@ -27,8 +27,7 @@ class LoadingAnim extends Component {
     return (
       <Lottie
         options={defaultOptions}
-        height={80}
-        width={80}
+        height={200}
         speed={this.state.speed}
         segments={[this.state.startFrame, this.state.endFrame]}
         isClickToPauseDisabled

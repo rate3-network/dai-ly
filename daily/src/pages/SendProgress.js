@@ -22,7 +22,8 @@ class SendProgress extends Component {
     return (
       <div>
         <Loading />
-        progress: sending ${networkStore.amount} to {networkStore.receiver}
+        progress: sending ${networkStore.amount} to {networkStore.receiver} with
+        speed {networkStore.speed}
       </div>
     );
   }

@@ -203,6 +203,7 @@ class SendDai extends Component {
                 this.props.RootStore.networkStore.send(
                   this.state.amount,
                   this.state.address,
+                  this.state.speed,
                 );
                 this.props.history.push('/progress');
               }}

@@ -21,6 +21,7 @@ class NetworkStore {
    */
   @observable status = -1;
   @observable receiver = '';
+  @observable speed = 0;
   @action
   init() {
     const web3 = new Web3(new Web3.providers.WebsocketProvider('wss://ropsten.infura.io/ws'));
@@ -52,9 +53,10 @@ class NetworkStore {
     }, 3000);
   }
   @action
-  async send(amount, receiver) {
+  async send(amount, receiver, speed) {
     this.receiver = receiver;
     this.amount = amount;
+    this.speed = speed;
     this.setStatus('0');
     // send transaction
     // axios.post('http://', {
