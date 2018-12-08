@@ -8,6 +8,8 @@ import (
 	"path"
 	"time"
 
+	"github.com/carlescere/scheduler"
+	"github.com/rate-engineering/dai-ly/go/ethereum"
 	"github.com/rate-engineering/dai-ly/go/zap"
 
 	_ "github.com/gemnasium/migrate/driver/postgres"
@@ -20,11 +22,13 @@ import (
 
 // ENVIRONMENTS
 const (
-	EnvPGHost     = "PGHOST"
-	EnvPGUser     = "PGUSER"
-	EnvPGPassword = "PGPASSWORD"
-	EnvPGDatabase = "PGDATABASE"
-	EnvPGPort     = "PGPORT"
+	EnvPGHost        = "PGHOST"
+	EnvPGUser        = "PGUSER"
+	EnvPGPassword    = "PGPASSWORD"
+	EnvPGDatabase    = "PGDATABASE"
+	EnvPGPort        = "PGPORT"
+	EnvTokenContract = "TOKEN_CONTRACT"
+	EnvRPCClient     = "RPC_CLIENT"
 )
 
 // SessionStore encodes and decodes session data stored in signed cookies
@@ -83,15 +87,40 @@ func main() {
 
 	}
 
-	s.API = &server.API{
-		Store:  &database.Store{Connection: db, Logger: logger},
-		Logger: logger,
+	// set up ethereum client
+	client, err := ethereum.NewClient(os.Getenv(EnvTokenContract), os.Getenv(EnvRPCClient))
+	if err != nil {
+		logger.Fatal()
 	}
+
+	s.API = &server.API{
+		Store:          &database.Store{Connection: db, Logger: logger},
+		Logger:         logger,
+		EthereumClient: client,
+	}
+
+	// tx := daily.Transaction{
+	// 	Sender:     "0x2b522cabe9950d1153c26c1b399b293caa99fcf9",
+	// 	Receiver:   "0x3644b986b3f5ba3cb8d5627a22465942f8e06d09",
+	// 	FeeAmount:  "2",
+	// 	SendAmount: "100",
+	// 	Nonce:      "0",
+	// 	Signature:  "0xa1773b6e73877a02f4681c278fe0c3361de5c964b18e02eb95b8a3c82f1f78972cecabeb1679b31b57586e18a035e0c97044c1bac7d3ebf681df2a468c46798c00",
+	// }
+	// println("submitting")
+	// submitted, err := s.API.EthereumClient.ExecuteTransaction(tx)
+	// println(submitted)
+	// if err != nil {
+	// 	log.Print(err)
+	// }
 
 	err = s.SetRouter()
 	if err != nil {
 		logger.Fatal(err)
 	}
+
+	job, _ := scheduler.Every(10).Seconds().Run(s.API.FindAndSubmitQueuedTransaction)
+	job.SkipWait <- true
 
 	logger.Fatal(s.Start())
 }

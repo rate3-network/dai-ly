@@ -16,6 +16,7 @@ import (
 
 	_ "github.com/lib/pq" //database driver
 	"github.com/rate-engineering/dai-ly/go/database"
+	"github.com/rate-engineering/dai-ly/go/ethereum"
 	"github.com/rate-engineering/dai-ly/go/zap"
 )
 
@@ -26,12 +27,13 @@ type Server struct {
 }
 
 type API struct {
-	Store       *database.Store
-	Logger      *zap.Logger
-	Protocol    string
-	Address     string
-	HostURL     string
-	Environment string
+	Store          *database.Store
+	Logger         *zap.Logger
+	Protocol       string
+	Address        string
+	HostURL        string
+	Environment    string
+	EthereumClient *ethereum.Client
 }
 
 // New returns a pointer to a http implentation of store.Server

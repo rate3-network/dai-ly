@@ -11,9 +11,9 @@ import (
 )
 
 type TransactionRequest struct {
+	Signature  string `json:"signature" valid:"hexadecimal,required"`
 	Sender     string `json:"sender" valid:"hexadecimal,required"`
 	Receiver   string `json:"receiver" valid:"hexadecimal,required"`
-	Delegate   string `json:"delegate" valid:"hexadecimal"`
 	FeeAmount  string `json:"feeAmount" valid:"required"`
 	SendAmount string `json:"sendAmount" valid:"required"`
 	Token      string `json:"token" valid:"hexadecimal"`
@@ -120,15 +120,17 @@ const (
 )
 
 type Transaction struct {
-	TXHash     string `json:"txHash"`
-	Sender     string `json:"sender"`
-	Receiver   string `json:"receiver"`
-	Delegate   string `json:"delegate"`
-	FeeAmount  string `json:"feeAmount"`
-	SendAmount string `json:"sendAmount"`
-	Token      string `json:"token"`
-	Nonce      string `json:"nonce"`
-	Status     string `json:"status"`
+	TXHash        string `json:"-"`
+	Signature     string `json:"signature"`
+	Sender        string `json:"sender"`
+	Receiver      string `json:"receiver"`
+	Delegate      string `json:"delegate"`
+	FeeAmount     string `json:"feeAmount"`
+	SendAmount    string `json:"sendAmount"`
+	Token         string `json:"token"`
+	Nonce         string `json:"nonce"`
+	SubmittedHash string `json:"submittedHash"`
+	Status        string `json:"status"`
 }
 
 type Transactions []Transaction

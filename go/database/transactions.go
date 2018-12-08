@@ -24,8 +24,8 @@ func (s Store) CreateTransaction(ctx context.Context, request daily.Transaction)
 		return
 	}
 
-	err = sess.InsertInto(TransactionsT).Columns(TXHashC, SenderC, ReceiverC, DelegateC, FeeAmountC, SendAmountC, TokenC, NonceC).Record(request).
-		Returning(TXHashC, SenderC, ReceiverC, DelegateC, FeeAmountC, SendAmountC, TokenC, NonceC).Load(&tx)
+	err = sess.InsertInto(TransactionsT).Columns(TXHashC, SignatureC, SenderC, ReceiverC, DelegateC, FeeAmountC, SendAmountC, TokenC, NonceC, SubmittedHashC).Record(request).
+		Returning(TXHashC, SignatureC, SenderC, ReceiverC, DelegateC, FeeAmountC, SendAmountC, TokenC, NonceC, SubmittedHashC, StatusC).Load(&tx)
 
 	return
 }
@@ -49,7 +49,18 @@ func (s Store) GetAllTransactions(ctx context.Context) (txs daily.Transactions, 
 func (s Store) GetQueuedTransaction(ctx context.Context) (tx daily.Transaction, err error) {
 	sess := s.NewSession(nil)
 
-	err = sess.Select("*").From(TransactionsT).Where(dbr.Eq(TXHashC, daily.StatusQueued)).LoadOne(&tx)
+	err = sess.Select("*").From(TransactionsT).Where(dbr.Eq(StatusC, daily.StatusQueued)).
+		OrderDir(LastCreatedC, true).LoadOne(&tx)
+
+	return
+}
+
+func (s Store) UpdateTransactionStatus(ctx context.Context, TXHash string, submittedHash string, status string) (err error) {
+	sess := s.NewSession(nil)
+
+	_, err = sess.Update(TransactionsT).SetMap(map[string]interface{}{
+		StatusC:        status,
+		SubmittedHashC: submittedHash}).Where(dbr.Eq(TXHashC, TXHash)).Exec()
 
 	return
 }

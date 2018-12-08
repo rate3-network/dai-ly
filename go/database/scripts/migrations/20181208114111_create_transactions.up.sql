@@ -4,13 +4,15 @@ CREATE TABLE transactions (
   sender            varchar(40)                   NOT NULL,
   receiver          varchar(40)                   NOT NULL,
   delegate          varchar(40)                   NOT NULL,
+  signature         varchar(40)                   NOT NULL,
   fee_amount        text                          NOT NULL,
   send_amount       text                          NOT NULL,
   token             text                          NOT NULL,
-  nonce             integer                       NOT NULL DEFAULT,
-  status            text                          NOT NULL DEFAULT "QUEUED",
+  nonce             integer                       NOT NULL,
+  status            text                          NOT NULL DEFAULT 'QUEUED',
+  submitted_hash    varchar(64)                   UNIQUE,
   last_created      timestamp with time zone      NOT NULL DEFAULT current_timestamp,
-  last_modified     timestamp with time zone      NOT NULL DEFAULT current_timestamp,
+  last_modified     timestamp with time zone      NOT NULL DEFAULT current_timestamp
 );
 
 CREATE OR REPLACE FUNCTION update_last_modified_column()
