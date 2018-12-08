@@ -23,7 +23,7 @@ const (
 	DelegateC   = "delegate"
 	FeeAmountC  = "fee_amount"
 	SendAmountC = "send_amount"
-	TokenC      = "fee_amount"
+	TokenC      = "token"
 	NonceC      = "nonce"
 
 	LastCreatedC  = "last_created"
