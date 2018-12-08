@@ -13,13 +13,13 @@ import Failure from '../components/Failure';
 const parseSpeed = (speed) => {
   switch (`${speed}`) {
     case '0':
-      return 'slow';
+      return 'normal';
     case '1':
       return 'fast';
     case '2':
       return 'super fast';
     default:
-      return 'slow';
+      return 'normal';
   }
 };
 const styles = (theme) => {
@@ -45,7 +45,12 @@ const styles = (theme) => {
     },
     address: {
       fontWeight: 500,
-      fontSize: '0.9em',
+      fontSize: '0.8em',
+      color: '#888',
+    },
+    hash: {
+      fontWeight: 500,
+      fontSize: '0.55em',
       color: '#888',
     },
   });
@@ -103,20 +108,20 @@ class SendProgress extends Component {
         </div>
         {statusParsed === 1 &&
           <div className={classes.status}>
-            Sending ${networkStore.amount}.00 to
+            Sending ${networkStore.amount} DAI to
             <span className={classes.address}>{networkStore.receiver}</span>
              with {parseSpeed(networkStore.speed)} speed
           </div>
         }
         {statusParsed === 2 &&
           <div className={classes.status}>
-            Successfully sent ${networkStore.amount}.00 to
+            Successfully sent ${networkStore.amount} DAI to
             <span className={classes.address}>{networkStore.receiver}</span>
              with {parseSpeed(networkStore.speed)} speed
             {verticleSpacer()}
             {verticleSpacer()}
             Transaction Hash
-            {networkStore.response.transactionHash}
+            <span className={classes.hash}>{networkStore.submittedHash}</span>
             {verticleSpacer()}
             {verticleSpacer()}
             <Link to="/send" style={{ textDecoration: 'none' }}>

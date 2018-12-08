@@ -115,7 +115,7 @@ class SendDai extends Component {
                   From:
                 </div>
                 <div className={classes.address}>
-                  0xE4Bfd8b40e78e539eb59719Ad695D0D0132FA502
+                  0x570932869143c8a6e07b4aa10e0b30814cf45ff0
                 </div>
                 {verticleSpacer()}
                 <div className={classes.cardTitle}>
@@ -197,6 +197,7 @@ class SendDai extends Component {
             {verticleSpacer()}
             {verticleSpacer()}
             <Button
+              disabled={(this.state.amount == '' || this.state.address == '')}
               color="primary"
               variant="contained"
               onClick={() => {

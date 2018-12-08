@@ -55,7 +55,6 @@ const styles = theme => ({
 class AppNavBar extends React.Component {
   render() {
     const { classes, theme } = this.props;
-
     const drawer = (
       <div>
         <div className={classes.toolbar} />
@@ -82,7 +81,7 @@ class AppNavBar extends React.Component {
 
     return (
       <div className={classes.root}>
-        <AppBar color="primary" position="static" className={classes.appBar}>
+        <AppBar color={this.props.RootStore.role === 1 ? 'primary' : 'secondary'} position="static" className={classes.appBar}>
           <Toolbar>
             <IconButton
               color="inherit"

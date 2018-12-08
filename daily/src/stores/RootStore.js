@@ -12,10 +12,14 @@ class RootStore {
   @observable uiStore = new UiStore(this);
 
   @observable recipient = '';
-
+  @observable role = 1;
   @action
   setRecipient(value) {
     this.recipient = value;
+  }
+  @action
+  setRole(value) {
+    this.role = value;
   }
 }
 

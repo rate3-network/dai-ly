@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import Dai from '../assets/Dai.png';
-
+import HistoryRow from '../components/HistoryRow';
 
 const styles = (theme) => {
   return ({
@@ -70,6 +70,7 @@ const Main = inject('RootStore')(observer((props) => {
           </Button>
         </Link>
       </div>
+      <HistoryRow />
     </div>
   );
 }));

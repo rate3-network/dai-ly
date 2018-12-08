@@ -8,6 +8,7 @@ import Main from './pages/Main';
 import QrScan from './pages/QrScan';
 import SendProgress from './pages/SendProgress';
 import SendDai from './pages/SendDai';
+import Delegate from './pages/Delegate';
 import RootStore from './stores/RootStore';
 import AppDrawer from './components/SwipableDrawer';
 import AppNavBar from './components/AppNavBar';
@@ -46,6 +47,11 @@ class App extends Component {
             <div className="app">
               <HashRouter basename="/">
                 <Switch>
+                  <Route
+                    exact
+                    path="/delegate"
+                    component={Delegate}
+                  />
                   <Route
                     exact
                     path="/"
