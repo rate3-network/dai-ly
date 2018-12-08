@@ -54,6 +54,36 @@ class NetworkStore {
   }
   @action
   async send(amount, receiver, speed) {
+    const web3 = new Web3(); // no need provider
+
+    const privateKey = '0x';
+
+    const sender = '0x';
+    const receiver = '0x';
+    const token = '0x';
+    const sendAmount = 100;
+    const feeAmount = 1;
+    const nonce = Math.floor(Math.random() * 10);
+
+    const hash = web3.utils.soliditySha3(
+      '0x15420b71',
+      token,
+      receiver,
+      sendAmount,
+      feeAmount,
+      nonce,
+    );
+    const signature = web3.eth.accounts.sign(hash, privateKey);
+
+    const payload = {
+      sender,
+      receiver,
+      token,
+      feeAmount,
+      sendAmount,
+      nonce,
+      signature,
+    };
     this.receiver = receiver;
     this.amount = amount;
     this.speed = speed;
