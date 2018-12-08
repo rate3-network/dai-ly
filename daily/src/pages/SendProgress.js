@@ -18,10 +18,11 @@ class SendProgress extends Component {
   }
   render() {
     const { classes, RootStore } = this.props;
+    const { networkStore } = RootStore;
     return (
       <div>
         <Loading />
-        progress
+        progress: sending ${networkStore.amount} to {networkStore.receiver}
       </div>
     );
   }

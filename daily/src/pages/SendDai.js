@@ -196,7 +196,19 @@ class SendDai extends Component {
             {verticleSpacer()}
             {verticleSpacer()}
             {verticleSpacer()}
-            <Button color="primary" variant="contained">Send</Button>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => {
+                this.props.RootStore.networkStore.send(
+                  this.state.amount,
+                  this.state.address,
+                );
+                this.props.history.push('/progress');
+              }}
+            >
+              Send
+            </Button>
 
           </div>
         </div>
@@ -210,5 +222,6 @@ SendDai.wrappedComponent.propTypes = {
 SendDai.propTypes = {
   classes: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 export default withRouter(withStyles(styles)(SendDai));
