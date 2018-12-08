@@ -7,6 +7,7 @@ import Slider from '@material-ui/lab/Slider';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import { inject, observer } from 'mobx-react';
 
 const styles = theme => ({
   root: {
@@ -73,10 +74,11 @@ const styles = theme => ({
   },
 });
 
+@inject('RootStore') @observer
 class SendDai extends Component {
   state = {
     amount: '',
-    address: this.props.match.params.address,
+    address: this.props.RootStore.recipient,
     speed: 0,
   }
   componentDidMount() {
@@ -202,6 +204,9 @@ class SendDai extends Component {
     );
   }
 }
+SendDai.wrappedComponent.propTypes = {
+  RootStore: PropTypes.object.isRequired,
+};
 SendDai.propTypes = {
   classes: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,

@@ -3,6 +3,7 @@ import QrReader from 'react-qr-reader';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { withRouter } from 'react-router';
+import { inject, observer } from 'mobx-react';
 
 const styles = theme => ({
   root: {
@@ -16,6 +17,7 @@ const styles = theme => ({
   },
 });
 
+@inject('RootStore') @observer
 class QrScan extends Component {
   constructor(props) {
     super(props);
@@ -28,13 +30,15 @@ class QrScan extends Component {
   handleScan(data) {
     console.log(data);
     if (data) {
+      const cleaned = data.replace(/\//g, '');
       this.setState({
-        result: data,
+        result: cleaned,
       });
       setTimeout(() => {
-        window.navigator.vibrate(300);
-        this.props.history.push(`./send/${data}`);
-      }, 1000);
+        window.navigator.vibrate(600);
+        this.props.RootStore.setRecipient(cleaned);
+        this.props.history.push(`./send/${cleaned}`);
+      }, 800);
     }
   }
   handleError(err) {
@@ -57,6 +61,9 @@ class QrScan extends Component {
     );
   }
 }
+QrScan.wrappedComponent.propTypes = {
+  RootStore: PropTypes.object.isRequired,
+};
 QrScan.propTypes = {
   classes: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,

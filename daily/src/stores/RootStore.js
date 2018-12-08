@@ -1,4 +1,4 @@
-import { configure, observable } from 'mobx';
+import { action, configure, observable } from 'mobx';
 import NetworkStore from './NetworkStore';
 import UiStore from './UiStore';
 
@@ -10,6 +10,13 @@ class RootStore {
   }
   @observable networkStore = new NetworkStore(this);
   @observable uiStore = new UiStore(this);
+
+  @observable recipient = '';
+
+  @action
+  setRecipient(value) {
+    this.recipient = value;
+  }
 }
 
 const SingletonRootStore = new RootStore();

@@ -6,6 +6,7 @@ import { HashRouter, Switch, Route } from 'react-router-dom';
 import './App.css';
 import Main from './pages/Main';
 import QrScan from './pages/QrScan';
+import SendProgress from './pages/SendProgress';
 import SendDai from './pages/SendDai';
 import RootStore from './stores/RootStore';
 import AppDrawer from './components/SwipableDrawer';
@@ -56,14 +57,14 @@ class App extends Component {
                     component={QrScan}
                   />
                   <Route
-                    exact
-                    path="/send/:address"
+                    // exact
+                    path="/send/"
                     component={SendDai}
                   />
                   <Route
                     exact
-                    path="/send/"
-                    component={SendDai}
+                    path="/progress"
+                    component={SendProgress}
                   />
                 </Switch>
               </HashRouter>
