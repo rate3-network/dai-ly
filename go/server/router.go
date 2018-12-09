@@ -40,13 +40,9 @@ func (s *Server) SetRouter() error {
 	// This is an example on how to limit only GET and POST requests.
 	limiter.SetMethods([]string{"GET", "POST"})
 
-	// if !c.App.InProduction() {
 	corHeaders := cors.New(cors.Options{
 		AllowedOrigins: []string{
-			// localhosts
-			"http://192.168.0.199:3000",
-			"http://localhost:5100",
-			"http://localhost:3000"},
+			"*"},
 		AllowCredentials: true,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
 		AllowedHeaders:   []string{"*"},
