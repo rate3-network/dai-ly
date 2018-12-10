@@ -20,7 +20,7 @@ const styles = {
     width: 'auto',
   },
 };
-const link = ['/', '/send', 'scan'];
+const link = ['', 'send', 'scan'];
 @inject('RootStore') @observer
 class AppDrawer extends React.Component {
   render() {
@@ -33,7 +33,15 @@ class AppDrawer extends React.Component {
             <ListItemText primary=" " />
           </ListItem>
           {['Home', 'Send', 'Scan'].map((text, index) => (
-            <ListItem key={text} button>
+            <ListItem
+              key={text}
+              button
+              onClick={() => {
+                const { origin, pathname } = window.location;
+                const go = `${origin}${pathname}/#/${link[index]}`;
+                window.location = go;
+              }}
+            >
               <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>

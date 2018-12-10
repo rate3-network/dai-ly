@@ -30,6 +30,16 @@ class NetworkStore {
   @observable submittedHash = '';
 
   @observable proxyContract = {};
+  @observable historyEvents = [];
+  @observable balance = '';
+  @action
+  setBalance(value) {
+    this.balance = value;
+  }
+  @action
+  setHistoryEvents(value) {
+    this.historyEvents = value;
+  }
   @action
   setProxyContract(value) {
     this.proxyContract = value;
@@ -46,7 +56,17 @@ class NetworkStore {
     const { abi } = contractRaw;
     const token = '0x479c13c7614560648836bd1a2b3c6cc3ea3edd00';
     const tokenContract = new web3.eth.Contract(abi, token);
+    const sender = '0x446C4201924ec3C9CAc04c0f18bEA09D752255C3';
     window.tokenContract = tokenContract;
+    const eventList = await tokenContract.getPastEvents('TransferPreSigned', { fromBlock: 0, toBlock: 'latest' });
+    // const filteredEvents = eventList.filter(ev => ev.event === 'TransferPreSigned');
+    console.log(eventList);
+    this.setHistoryEvents(eventList);
+    const balance = await tokenContract.methods.balanceOf(sender).call();
+    console.log(balance);
+    const bn = new web3.utils.BN(balance);
+    const inEth = web3.utils.fromWei(bn);
+    this.setBalance(inEth);
   }
   @action
   setResponse(value) {
@@ -118,7 +138,7 @@ class NetworkStore {
       signature,
     };
     // send transaction
-    const response = await axios.post('http://172.17.9.62:5100/api/hash', payload);
+    const response = await axios.post('https://08bab1d2.ngrok.io/api/hash', payload);
     const hashFromResponse = response.data.data;
     const sig = web3.eth.accounts.sign(hashFromResponse, privateKey).signature;
     const payload2 = {
@@ -130,7 +150,7 @@ class NetworkStore {
       nonce,
       signature: sig,
     };
-    const response2 = await axios.post('http://172.17.9.62:5100/api/transaction', payload2);
+    const response2 = await axios.post('https://08bab1d2.ngrok.io/api/transaction', payload2);
     console.log(response2.data);
     const { txHash } = response2.data.data;
     console.log('txHash', txHash);
@@ -138,7 +158,7 @@ class NetworkStore {
     // const { submittedHash } = response3.data.data;
     // console.log('submittedHash', response3.data.data);
     const interval = setInterval(async () => {
-      const getResponse = await axios.get(`http://172.17.9.62:5100/api/transactions/${txHash}`);
+      const getResponse = await axios.get(`https://08bab1d2.ngrok.io/api/transactions/${txHash}`);
       console.log('get', getResponse.data.data.status);
       if (getResponse.data.data.status === 'SUCCESS') {
         console.log('succuss@!!', getResponse.data.data);

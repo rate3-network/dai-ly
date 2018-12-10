@@ -44,6 +44,18 @@ const styles = (theme) => {
     noDeco: {
       textDecoration: 'none',
     },
+    tttt: {
+      alignSelf: 'flex-start',
+      padding: '1em',
+      color: '#555',
+    },
+    histSection: {
+      display: 'flex',
+      flexDirection: 'column',
+      minWidth: '100vw',
+      minHeight: '100vh',
+      backgroundColor: 'white',
+    },
   });
 };
 const Main = inject('RootStore')(observer((props) => {
@@ -52,10 +64,10 @@ const Main = inject('RootStore')(observer((props) => {
     <div className={classes.root}>
       <img src={Dai} alt="Dai Icon" />
       <span className={classes.balance}>
-        ${'250.00'} DAI
+        {props.RootStore.networkStore.balance} DAI
       </span>
       <span className={classes.pending}>
-        ${'250.00'} DAI Pending
+        ___ DAI Pending
       </span>
       <div className={classes.btnGroup}>
         <Link className={classes.noDeco} to="/send">
@@ -70,7 +82,14 @@ const Main = inject('RootStore')(observer((props) => {
           </Button>
         </Link>
       </div>
-      <HistoryRow />
+      <span className={classes.tttt}>History</span>
+      <div className={classes.histSection}>
+        {props.RootStore.networkStore.historyEvents.map((item) => {
+          return (
+            <HistoryRow key={item.transactionHash} ev={item} />
+          );
+        })}
+      </div>
     </div>
   );
 }));

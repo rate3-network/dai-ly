@@ -13,3 +13,11 @@ export const fromTokenAmount = (amount, dp) => (
     .toFixed(dp, Decimal.ROUND_DOWN)
     .toString()
 );
+
+export const shorten = (addr) => {
+  if (addr.length > 10) {
+    return addr.substr(0, 10);
+  }
+  return addr;
+};
+
