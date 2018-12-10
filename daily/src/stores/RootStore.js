@@ -13,9 +13,14 @@ class RootStore {
 
   @observable recipient = '';
   @observable role = 1;
+  @observable historyObj = {};
   @action
   setRecipient(value) {
     this.recipient = value;
+  }
+  @action
+  setHistoryObj(value) {
+    this.historyObj = value;
   }
   @action
   setRole(value) {
